@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>ЕРКЕМAI — Inclusive English learning</title><link rel="icon" type="image/jpeg" href="./assets/erkemai-avatar.jpg">
+  <title>YerkemAi — Inclusive English learning</title><link rel="icon" type="image/jpeg" href="./assets/erkemai-avatar.jpg">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:wght@400;700&family=Baloo+2:wght@600;700;800&family=Nunito:wght@500;700;900&display=swap" rel="stylesheet">
@@ -55,26 +55,349 @@
     .aiko-character.mascot-avatar{width:150px;height:150px;border-radius:50%;object-fit:cover;border:4px solid var(--mint);animation:aikoBob 3.4s ease-in-out infinite}
     @keyframes brandFloat{0%,100%{transform:translateY(0) rotate(-1deg)}50%{transform:translateY(-4px) rotate(1deg)}}
     body.reduce .brandmark.brand-avatar,body.reduce .aiko-character.mascot-avatar{animation:none!important}
-  </style>
+  
+    :root{--bg:#f1f8ff;--paper:#ffffff;--ink:#20354d;--muted:#53677d;--purple:#4778de;--purple2:#85a8f3;--pink:#f38ba6;--yellow:#ffdb78;--mint:#4fc7a5;--blue:#77bce8;--line:#d9e7f4;--soft:#edf5fb;--shadow:0 22px 60px rgba(48,82,130,.12)}
+    body{background:radial-gradient(circle at 12% 8%,#dceeff 0 19%,transparent 20%),radial-gradient(circle at 90% 26%,#e4eaff 0 16%,transparent 17%),radial-gradient(circle at 20% 90%,#d9fff2 0 18%,transparent 19%),var(--bg)}
+    .journey-section{position:relative;isolation:isolate;overflow:hidden;margin:30px 0;padding:clamp(48px,7vw,82px) 0;border:1px solid #d9edfb;border-radius:38px;background:linear-gradient(135deg,#e9f6ff 0%,#eff4ff 52%,#e8fff7 100%)}
+    .journey-container{position:relative;z-index:1}
+    .journey-heading{display:flex;align-items:center;gap:20px;max-width:880px;margin:0 auto 20px}
+    .journey-mascot{width:76px;height:76px;flex:none;object-fit:cover;border:3px solid white;border-radius:50%;box-shadow:0 8px 22px #527ca533;animation:brandFloat 4.5s ease-in-out infinite}
+    .journey-eyebrow{display:inline-block;color:#4778de;font-size:13px;font-weight:900;letter-spacing:.1em}
+    .journey-heading h2{margin:4px 0 8px;font-family:var(--font-display);font-size:clamp(34px,5vw,54px);line-height:1.05;color:var(--ink)}
+    .journey-heading p{margin:0;max-width:66ch}
+    .journey-reassurance{display:flex;justify-content:center;flex-wrap:wrap;gap:10px 20px;margin:22px auto 26px;color:#365577;font-weight:900}
+    .journey-reassurance span{padding:8px 14px;border:1px solid #d7e9f7;border-radius:999px;background:#ffffffbf}
+    .journey-total{max-width:760px;margin:0 auto 28px;padding:16px 20px;border:1px solid #d8e7f4;border-radius:22px;background:#ffffffd9;box-shadow:0 10px 28px #527ca312}
+    .journey-total>div{display:flex;align-items:center;justify-content:space-between;gap:16px;font-weight:900}
+    .journey-total progress,.journey-level-progress{display:block;width:100%;height:12px;margin-top:10px;accent-color:#4fc7a5}
+    .journey-level-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:14px;margin:0 auto 24px}
+    .journey-level{display:grid;grid-template-columns:auto 1fr;align-items:center;gap:3px 10px;min-height:142px;padding:16px;text-align:left;border:2px solid #d8e7f4;border-radius:24px;background:#ffffffed;color:var(--ink);box-shadow:0 12px 28px #527ca312;cursor:pointer;transition:transform .2s,border-color .2s,box-shadow .2s}
+    .journey-level:hover:not(:disabled){transform:translateY(-3px);border-color:#8eb4ef}
+    .journey-level:focus-visible,.journey-answer:focus-visible{outline:4px solid #f2bf45;outline-offset:3px}
+    .journey-level.is-active{border-color:#4778de;box-shadow:0 0 0 4px #4778de20,0 14px 30px #527ca322}
+    .journey-level.is-done{border-color:#4fc7a5}
+    .journey-level.is-locked{background:#f5f8fc;color:#68798b}
+    .journey-level:disabled{cursor:not-allowed}
+    .journey-level-icon{grid-row:span 2;display:grid;place-items:center;width:48px;height:48px;border-radius:16px;background:#edf5ff;font-size:28px}
+    .journey-level-code{color:#4778de;font-weight:900;letter-spacing:.1em}
+    .journey-level strong{grid-column:1/-1;margin-top:6px;font-size:17px}
+    .journey-level-status,.journey-level-points{grid-column:1/-1;font-size:13px;font-weight:800;color:#52677d}
+    .journey-level.is-done .journey-level-status{color:#128a68}
+    .journey-test-card{max-width:920px;margin:0 auto;padding:clamp(20px,4vw,34px);border:1px solid #d6e6f3;border-radius:30px;background:#fff;box-shadow:0 20px 54px #3e62881a}
+    .journey-test-top{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap}
+    .journey-current-level{font-weight:900;color:#4778de}
+    .journey-question-count{font-weight:800;color:#53677d}
+    .journey-level-score{padding:7px 12px;border-radius:999px;background:#fff5cf;color:#624e16;font-weight:900}
+    .journey-level-progress{margin:12px 0 20px}
+    .journey-activity{display:grid;grid-template-columns:130px 1fr;align-items:center;gap:22px;padding:22px;border-radius:24px;background:linear-gradient(135deg,#f0f8ff,#f3fff9)}
+    .journey-picture{display:grid;place-items:center;min-height:116px;border-radius:22px;background:#fff;font-size:62px;box-shadow:0 8px 24px #527ca315}
+    .journey-instruction{margin:0 0 7px;color:#4778de;font-weight:900}
+    .journey-question-copy h3{margin:0;font-family:var(--font-display);font-size:clamp(24px,3vw,34px);line-height:1.2;color:var(--ink);letter-spacing:.01em}
+    .journey-passage{margin:15px 0 0;padding:16px 18px;border-left:5px solid #85a8f3;border-radius:0 16px 16px 0;background:#fff;color:#273b51;font-size:19px;line-height:1.8;letter-spacing:.02em}
+    .journey-answer-heading{margin:20px 0 10px;font-weight:900}
+    .journey-answers{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:12px}
+    .journey-answer{min-height:66px;padding:14px 16px;border:2px solid #d9e7f4;border-radius:18px;background:#fff;color:#20354d;text-align:left;font-size:18px;font-weight:900;line-height:1.45;cursor:pointer;transition:background .2s,border-color .2s,transform .2s}
+    .journey-answer:hover:not(:disabled){transform:translateY(-2px);border-color:#85a8f3;background:#f6faff}
+    .journey-answer.is-wrong{border-color:#ed8d93;background:#fff0f0}
+    .journey-answer.is-right{border-color:#4fc7a5;background:#eafff7}
+    .journey-answer:disabled{cursor:default}
+    .journey-feedback{min-height:32px;margin:17px 0 0;padding:12px 15px;border-radius:16px;background:#f3f8fc;color:#36516d;font-weight:800}
+    .journey-feedback.is-correct{background:#eafff7;color:#12684f}
+    .journey-feedback.is-try{background:#fff7e7;color:#72551a}
+    .journey-actions,.journey-reward-actions{display:flex;justify-content:center;flex-wrap:wrap;gap:10px;margin-top:14px}
+    .journey-actions .btn,.journey-reward-actions .btn{margin:0}
+    .journey-reward{padding:24px 12px 6px;text-align:center}
+    .journey-reward-icon{display:inline-grid;place-items:center;width:96px;height:96px;border:8px solid #fff3c4;border-radius:50%;background:#fff9e4;font-size:52px;animation:badgePop .55s ease-out both}
+    @keyframes badgePop{0%{transform:scale(.7);opacity:.3}70%{transform:scale(1.08)}100%{transform:scale(1);opacity:1}}
+    .journey-earned-badge{display:block;margin:14px 0 2px;color:#4778de;font-weight:900}
+    .journey-reward h3{margin:4px auto 8px;font-family:var(--font-display);font-size:clamp(28px,4vw,40px);color:var(--ink)}
+    .journey-reward p{max-width:62ch;margin:0 auto 18px}
+    .journey-save-note{margin:18px 0 0;text-align:center;color:#53677d;font-size:14px}
+    .journey-section [hidden]{display:none!important}
+    body.contrast .journey-section{border:2px solid #ffd166;background:#10131f}
+    body.contrast .journey-level,body.contrast .journey-test-card,body.contrast .journey-total{border-color:#ffd166;background:#171b2d;color:#fff8c9}
+    body.contrast .journey-activity,body.contrast .journey-feedback{border:1px solid #ffd166;background:#222842;color:#fff8c9}
+    body.contrast .journey-question-copy h3,body.contrast .journey-answer,body.contrast .journey-reward h3{color:#fff8c9}
+    body.contrast .journey-answer{border-color:#ffd166;background:#171b2d}
+    body.reduce .journey-mascot,body.reduce .journey-reward-icon{animation:none!important}
+    @media(max-width:900px){.journey-level-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
+    @media(max-width:600px){.journey-section{margin:20px 0;padding:44px 0;border-radius:26px}.journey-heading{align-items:flex-start;gap:12px}.journey-mascot{width:56px;height:56px}.journey-reassurance{justify-content:flex-start}.journey-level-grid{gap:9px}.journey-level{min-height:134px;padding:12px;border-radius:19px}.journey-level strong{font-size:15px}.journey-activity{grid-template-columns:1fr;gap:12px;padding:16px}.journey-picture{min-height:76px;font-size:48px}.journey-test-top{align-items:flex-start}.journey-answers{grid-template-columns:1fr}.journey-answer{min-height:58px}.journey-reward{padding-top:20px}}
+    @media(prefers-reduced-motion:reduce){.journey-mascot,.journey-reward-icon{animation:none!important}html{scroll-behavior:auto}}</style>
 </head>
 <body>
   <a class="skip" href="#main">Skip to content</a>
   <div class="blob b1"></div><div class="blob b2"></div><div class="blob b3"></div>
-  <nav aria-label="Main navigation"><div class="container navin"><div class="brand"><img class="brandmark brand-avatar" src="./assets/erkemai-avatar.jpg" alt="" width="48" height="48">ЕРКЕМAI</div><div class="navlinks"><a href="#reading">Reader</a><a href="#why">Why</a><a href="#demo">Demo</a><a href="#mistakes">Mistakes</a><a href="#presentation">Slides</a></div><div class="nav-actions"><button class="smallbtn" title="Dyslexia reading mode" aria-label="Dyslexia reading mode" aria-pressed="false" onclick="toggleMode('dyslexia')">Aa</button><button class="smallbtn" title="High contrast" aria-label="High contrast" aria-pressed="false" onclick="toggleMode('contrast')">◐</button><button class="smallbtn" title="Reduce motion" aria-label="Reduce motion" aria-pressed="false" onclick="toggleMode('reduce')">▣</button><button class="navbtn" onclick="go('#mistakes')">Try Aiko</button></div></div></nav>
+  <nav aria-label="Main navigation"><div class="container navin"><div class="brand"><img class="brandmark brand-avatar" src="./assets/erkemai-avatar.jpg" alt="" width="48" height="48">YerkemAi</div><div class="navlinks"><a href="#academy">Levels</a><a href="#reading">Reader</a><a href="#why">Why</a><a href="#demo">Demo</a><a href="#mistakes">Mistakes</a><a href="#presentation">Slides</a></div><div class="nav-actions"><button class="smallbtn" title="Dyslexia reading mode" aria-label="Dyslexia reading mode" aria-pressed="false" onclick="toggleMode('dyslexia')">Aa</button><button class="smallbtn" title="High contrast" aria-label="High contrast" aria-pressed="false" onclick="toggleMode('contrast')">◐</button><button class="smallbtn" title="Reduce motion" aria-label="Reduce motion" aria-pressed="false" onclick="toggleMode('reduce')">▣</button><button class="navbtn" onclick="go('#mistakes')">Try Aiko</button></div></div></nav>
   <main id="main">
-    <section class="hero container"><div class="reveal"><span class="eyebrow">🌈 Dyslexia-friendly English learning</span><h1>ЕРКЕМAI helps you learn.<br><span>At your own pace.</span></h1><p>ЕРКЕМAI is a friendly English-learning space for children who read differently. It offers readable text, audio, visual choices, short activities and Aiko, a practice companion that turns common mistakes into manageable next steps.</p><div class="actions"><button class="btn primary" onclick="go('#demo')">🚀 Explore demo</button><button class="btn secondary" onclick="go('#mistakes')">🤖 Meet Aiko</button><button class="btn secondary" onclick="go('#reading')">📖 Read a short story</button></div></div><div class="hero-card reveal"><div class="hero-photo"><img src="https://images.unsplash.com/photo-1503676260728-1c00da094a0b?auto=format&fit=crop&w=1200&q=85" alt="Children learning in a friendly classroom"></div><div class="float-card fc1">🔊 Listen first</div><div class="float-card fc2">Aa Dyslexia mode</div><div class="float-card fc3">💡 Fix mistakes</div></div></section>
-    <section id="reading" class="reader-nook"><div class="container"><div class="section-head reader-intro reveal"><span class="tag">Your calm reading corner</span><h2>Read one small step at a time.</h2><p>Make this story look and feel comfortable. There is no one right way to read.</p></div><div class="reader-card reveal"><div class="reader-options" role="group" aria-label="Reading settings"><label class="reader-field reader-story-field" for="readerStoryChoice">Choose a little story<select id="readerStoryChoice"><option value="dog">Mia and the Dog</option><option value="moon">Trip to the Moon</option><option value="garden">Ben’s Garden</option></select></label><label class="reader-field" for="readerSize">Text size <output class="reader-value" id="readerSizeValue" for="readerSize">24 px</output><input id="readerSize" type="range" min="20" max="30" step="2" value="24"></label><label class="reader-field" for="readerFont">Letter style<select id="readerFont"><option value="atkinson">Atkinson</option><option value="arial">Arial</option></select></label><label class="reader-field" for="readerSpacing">Space between lines<select id="readerSpacing"><option value="1.7">A little</option><option value="1.9" selected>More</option><option value="2.1">Lots</option></select></label><fieldset class="reader-field"><legend>Page color</legend><div class="reader-colors"><label><input type="radio" name="readerTone" value="cream" checked>Warm cream</label><label><input type="radio" name="readerTone" value="sky">Soft blue</label><label><input type="radio" name="readerTone" value="peach">Soft peach</label></div></fieldset></div><article class="reader-text" id="readerPage" data-tone="cream" aria-label="Short reading practice"><h3 class="reader-story-title" id="readerStoryTitle">Mia and the Dog</h3><p class="reader-line" id="readerLine" tabindex="-1" aria-live="polite">Mia has a little dog.</p></article><div class="reader-progress"><progress id="readerProgress" max="5" value="1" aria-label="Story progress"></progress><span class="reader-value" id="readerPosition">1 / 5</span><small>Just a few lines. No timer and no score. Your place stays on this device.</small></div><div class="reader-actions"><button class="btn secondary" id="readLineBtn" type="button">🔊 Listen to this line</button><button class="btn secondary" id="stopReadingBtn" type="button">Stop audio</button><button class="btn secondary" id="readerResetSettings" type="button">Reset settings</button></div><div class="reader-pagination"><button class="btn secondary" id="readerPrevBtn" type="button">← Previous</button><button class="btn primary" id="readerNextBtn" type="button">Next line →</button><button class="btn primary" id="readerRestartBtn" type="button" hidden>Read again</button></div><p class="reader-status" id="readerStatus" role="status" aria-live="polite">Take your time. You can listen or read quietly.</p></div></div></section>
+    <section class="hero container"><div class="reveal"><span class="eyebrow">🌈 Dyslexia-friendly English learning</span><h1>YerkemAi helps you learn.<br><span>At your own pace.</span></h1><p>YerkemAi is a friendly English-learning space for children who read differently. It offers readable text, audio, visual choices, short activities and Aiko, a practice companion that turns common mistakes into manageable next steps.</p><div class="actions"><button class="btn primary" onclick="go('#academy')">⭐ Start a level</button><button class="btn secondary" onclick="go('#demo')">🚀 Explore demo</button><button class="btn secondary" onclick="go('#mistakes')">🤖 Meet Aiko</button><button class="btn secondary" onclick="go('#reading')">📖 Read a short story</button></div></div><div class="hero-card reveal"><div class="hero-photo"><img src="https://images.unsplash.com/photo-1503676260728-1c00da094a0b?auto=format&fit=crop&w=1200&q=85" alt="Children learning in a friendly classroom"></div><div class="float-card fc1">🔊 Listen first</div><div class="float-card fc2">Aa Dyslexia mode</div><div class="float-card fc3">💡 Fix mistakes</div></div></section>
+    <section id="academy" class="journey-section" lang="kk" aria-labelledby="journeyTitle">
+  <div class="container journey-container">
+    <div class="journey-heading reveal">
+      <img class="journey-mascot" src="./assets/erkemai-avatar.jpg" alt="" width="76" height="76" loading="lazy">
+      <div>
+        <span class="journey-eyebrow">🌟 АҒЫЛШЫН ТІЛІН ҮЙРЕНУ ЖОЛЫ</span>
+        <h2 id="journeyTitle">YerkemAi оқу әлемі</h2>
+        <p>Бір қадамнан баста. Әр деңгейде 5 тапсырма бар. Дұрыс жауапқа бір жұлдыз аласың. 5 жұлдыз жинасаң, келесі деңгей ашылады.</p>
+      </div>
+    </div>
+    <div class="journey-reassurance"><span>💛 Қате жауап үшін ұпай шегерілмейді.</span><span>⏳ Таймер жоқ — асықпай орында.</span></div>
+    <div class="journey-total">
+      <div><strong>Сенің жұлдыздарың</strong><span><b id="journeyTotalScore">0</b> / 20</span></div>
+      <progress id="journeyTotalProgress" max="20" value="0" aria-label="Жалпы оқу жолындағы жұлдыздар"></progress>
+    </div>
+    <div class="journey-level-grid" id="journeyLevelGrid" role="group" aria-label="Ағылшын тілі деңгейлері">
+      <button class="journey-level is-active" type="button" data-journey-level="0" aria-pressed="true">
+        <span class="journey-level-icon" aria-hidden="true">🍎</span><span class="journey-level-code">A1</span><strong>Алғашқы сөздер</strong><span class="journey-level-status" id="journeyStatus0">Ашық</span><span class="journey-level-points" id="journeyPoints0">0 / 5 ⭐</span>
+      </button>
+      <button class="journey-level is-locked" type="button" data-journey-level="1" aria-pressed="false" disabled>
+        <span class="journey-level-icon" aria-hidden="true">💬</span><span class="journey-level-code">A2</span><strong>Қысқа сөйлемдер</strong><span class="journey-level-status" id="journeyStatus1">🔒 Құлыптаулы</span><span class="journey-level-points" id="journeyPoints1">0 / 5 ⭐</span>
+      </button>
+      <button class="journey-level is-locked" type="button" data-journey-level="2" aria-pressed="false" disabled>
+        <span class="journey-level-icon" aria-hidden="true">🧩</span><span class="journey-level-code">B1</span><strong>Грамматика шебері</strong><span class="journey-level-status" id="journeyStatus2">🔒 Құлыптаулы</span><span class="journey-level-points" id="journeyPoints2">0 / 5 ⭐</span>
+      </button>
+      <button class="journey-level is-locked" type="button" data-journey-level="3" aria-pressed="false" disabled>
+        <span class="journey-level-icon" aria-hidden="true">📚</span><span class="journey-level-code">B2</span><strong>Мәтін зерттеушісі</strong><span class="journey-level-status" id="journeyStatus3">🔒 Құлыптаулы</span><span class="journey-level-points" id="journeyPoints3">0 / 5 ⭐</span>
+      </button>
+    </div>
+    <div class="journey-test-card">
+      <div class="journey-test-top">
+        <span class="journey-current-level" id="journeyCurrentLevel">A1 · Алғашқы сөздер</span>
+        <span class="journey-question-count" id="journeyQuestionCount">Тапсырма 1 / 5</span>
+        <span class="journey-level-score" aria-label="Осы деңгейдегі жұлдыздар"><span aria-hidden="true">⭐</span> <b id="journeyLevelScore">0</b> / 5</span>
+      </div>
+      <progress class="journey-level-progress" id="journeyLevelProgress" max="5" value="0" aria-label="Ағымдағы деңгейдегі ұпай"></progress>
+      <div id="journeyQuestionPanel">
+        <div class="journey-activity">
+          <div class="journey-picture" id="journeyPicture" role="img" aria-label="Мысықтың суреті">🐱</div>
+          <div class="journey-question-copy">
+            <p class="journey-instruction">Суретке немесе мәтінге мұқият қара.</p>
+            <h3 id="journeyPrompt" lang="en" tabindex="-1">Choose the English word for this picture.</h3>
+            <p class="journey-passage" id="journeyPassage" lang="en" hidden></p>
+          </div>
+        </div>
+        <div class="journey-answer-heading">Жауапты таңда:</div>
+        <div class="journey-answers" id="journeyAnswers" role="group" aria-label="Жауап нұсқалары"></div>
+        <p class="journey-feedback" id="journeyFeedback" role="status" aria-live="polite">Асықпай ойлан. Сенің қолыңнан келеді!</p>
+        <div class="journey-actions">
+          <button class="btn secondary" id="journeyListen" type="button">🔊 Сұрақты тыңдау</button>
+          <button class="btn primary" id="journeyNext" type="button" hidden>Келесі тапсырма →</button>
+        </div>
+      </div>
+      <div class="journey-reward" id="journeyReward" hidden role="status" aria-live="polite">
+        <div class="journey-reward-icon" id="journeyRewardIcon" aria-hidden="true">🏅</div>
+        <span class="journey-earned-badge" id="journeyEarnedBadge">A1 төсбелгісі</span>
+        <h3 id="journeyRewardTitle">Жарайсың!</h3>
+        <p id="journeyRewardText"></p>
+        <div class="journey-reward-actions">
+          <button class="btn primary" id="journeyContinue" type="button" hidden>Келесі деңгейге өт →</button>
+          <button class="btn secondary" id="journeyReplay" type="button">Деңгейді қайталау</button>
+        </div>
+      </div>
+    </div>
+    <p class="journey-save-note">📍 Оқу барысы осы құрылғыда ғана сақталады.</p>
+  </div>
+</section><section id="reading" class="reader-nook"><div class="container"><div class="section-head reader-intro reveal"><span class="tag">Your calm reading corner</span><h2>Read one small step at a time.</h2><p>Make this story look and feel comfortable. There is no one right way to read.</p></div><div class="reader-card reveal"><div class="reader-options" role="group" aria-label="Reading settings"><label class="reader-field reader-story-field" for="readerStoryChoice">Choose a little story<select id="readerStoryChoice"><option value="dog">Mia and the Dog</option><option value="moon">Trip to the Moon</option><option value="garden">Ben’s Garden</option></select></label><label class="reader-field" for="readerSize">Text size <output class="reader-value" id="readerSizeValue" for="readerSize">24 px</output><input id="readerSize" type="range" min="20" max="30" step="2" value="24"></label><label class="reader-field" for="readerFont">Letter style<select id="readerFont"><option value="atkinson">Atkinson</option><option value="arial">Arial</option></select></label><label class="reader-field" for="readerSpacing">Space between lines<select id="readerSpacing"><option value="1.7">A little</option><option value="1.9" selected>More</option><option value="2.1">Lots</option></select></label><fieldset class="reader-field"><legend>Page color</legend><div class="reader-colors"><label><input type="radio" name="readerTone" value="cream" checked>Warm cream</label><label><input type="radio" name="readerTone" value="sky">Soft blue</label><label><input type="radio" name="readerTone" value="peach">Soft peach</label></div></fieldset></div><article class="reader-text" id="readerPage" data-tone="cream" aria-label="Short reading practice"><h3 class="reader-story-title" id="readerStoryTitle">Mia and the Dog</h3><p class="reader-line" id="readerLine" tabindex="-1" aria-live="polite">Mia has a little dog.</p></article><div class="reader-progress"><progress id="readerProgress" max="5" value="1" aria-label="Story progress"></progress><span class="reader-value" id="readerPosition">1 / 5</span><small>Just a few lines. No timer and no score. Your place stays on this device.</small></div><div class="reader-actions"><button class="btn secondary" id="readLineBtn" type="button">🔊 Listen to this line</button><button class="btn secondary" id="stopReadingBtn" type="button">Stop audio</button><button class="btn secondary" id="readerResetSettings" type="button">Reset settings</button></div><div class="reader-pagination"><button class="btn secondary" id="readerPrevBtn" type="button">← Previous</button><button class="btn primary" id="readerNextBtn" type="button">Next line →</button><button class="btn primary" id="readerRestartBtn" type="button" hidden>Read again</button></div><p class="reader-status" id="readerStatus" role="status" aria-live="polite">Take your time. You can listen or read quietly.</p></div></div></section>
     <section id="why"><div class="container"><div class="section-head reveal"><span class="tag">The idea</span><h2>For children who read differently.</h2><p>Children with dyslexia may need more time, clearer spacing, audio and repeated practice. The goal is not to make the task easier — it is to make the learning path clearer.</p></div><div class="grid"><article class="card reveal"><div class="icon purple">Aa</div><h3>Readable design</h3><p>Large text, bigger spacing, warm background and optional high contrast reduce visual overload.</p></article><article class="card reveal"><div class="icon pink">🔊</div><h3>Audio support</h3><p>Words and instructions can be heard, not only read, so children can connect sound and meaning.</p></article><article class="card reveal"><div class="icon mint">🧠</div><h3>Mistake review</h3><p>Aiko explains common patterns kindly and gives one small exercise to try again.</p></article></div></div></section>
     <section><div class="container story"><div class="photo-stack reveal"><img class="p1" src="https://images.unsplash.com/photo-1544717305-2782549b5136?auto=format&fit=crop&w=900&q=85" alt="Child studying with a notebook"><img class="p2" src="https://images.unsplash.com/photo-1497633762265-9d179a990aa6?auto=format&fit=crop&w=900&q=85" alt="Colorful learning books"></div><div class="story-copy reveal"><span class="tag">Built for real learners</span><h2>A friendly coach, not a scary test.</h2><p>Meet <strong>Aiko</strong>, the AI English helper. Aiko gives short instructions, checks simple sentences and helps children understand what to fix.</p><div class="check"><b>✓</b><span>Short sentences and clear visual structure</span></div><div class="check"><b>✓</b><span>Option to increase spacing and reduce motion</span></div><div class="check"><b>✓</b><span>Positive feedback before correction</span></div><div class="check"><b>✓</b><span>One mistake → one explanation → one practice task</span></div></div></div></section>
-    <section id="demo"><div class="container"><div class="section-head reveal"><span class="tag">Interactive prototype</span><h2>Meet Aiko, your English trainer.</h2><p>Tap an answer. Aiko reacts instantly and gives a clear next step.</p></div><div class="demo-wrap"><div class="aiko-panel reveal"><div class="trainer"><img class="aiko-character mascot-avatar" src="./assets/erkemai-avatar.jpg" alt="ЕРКЕМAI mascot reading a book" width="150" height="150" loading="lazy"><div><strong>Aiko · English Helper</strong><small>Dyslexia-friendly English coach</small></div></div><div class="speech"><p id="aikoSpeech">Hi! I'm Aiko. I will help you read, listen, answer and learn from mistakes. No rush — one step at a time.</p></div><div class="actions"><button class="btn mint" onclick="speakText(document.getElementById('aikoSpeech').textContent)">🔊 Listen</button><button class="btn secondary" onclick="toggleMode('dyslexia')">Aa Reading mode</button></div></div><div class="demo-box reveal"><div class="question"><div class="tag" id="quizPrompt">Choose the picture that matches the word · 1 of 5</div><div class="word" id="quizWord">DOG</div><button class="btn secondary" onclick="speakText(document.getElementById('quizWord').textContent)">🔊 Hear word</button><div class="answers" id="quizAnswers" aria-label="Answer choices"><button class="answer" data-correct="false">🐱 Cat</button><button class="answer" data-correct="true">🐶 Dog</button><button class="answer" data-correct="false">🐟 Fish</button><button class="answer" data-correct="false">🐦 Bird</button></div><p id="demoFeedback" class="feedback" aria-live="polite"></p><button class="btn secondary" id="nextWordBtn" type="button">Next word →</button></div></div></div></div></section>
+    <section id="demo"><div class="container"><div class="section-head reveal"><span class="tag">Interactive prototype</span><h2>Meet Aiko, your English trainer.</h2><p>Tap an answer. Aiko reacts instantly and gives a clear next step.</p></div><div class="demo-wrap"><div class="aiko-panel reveal"><div class="trainer"><img class="aiko-character mascot-avatar" src="./assets/erkemai-avatar.jpg" alt="YerkemAi mascot reading a book" width="150" height="150" loading="lazy"><div><strong>Aiko · English Helper</strong><small>Dyslexia-friendly English coach</small></div></div><div class="speech"><p id="aikoSpeech">Hi! I'm Aiko. I will help you read, listen, answer and learn from mistakes. No rush — one step at a time.</p></div><div class="actions"><button class="btn mint" onclick="speakText(document.getElementById('aikoSpeech').textContent)">🔊 Listen</button><button class="btn secondary" onclick="toggleMode('dyslexia')">Aa Reading mode</button></div></div><div class="demo-box reveal"><div class="question"><div class="tag" id="quizPrompt">Choose the picture that matches the word · 1 of 5</div><div class="word" id="quizWord">DOG</div><button class="btn secondary" onclick="speakText(document.getElementById('quizWord').textContent)">🔊 Hear word</button><div class="answers" id="quizAnswers" aria-label="Answer choices"><button class="answer" data-correct="false">🐱 Cat</button><button class="answer" data-correct="true">🐶 Dog</button><button class="answer" data-correct="false">🐟 Fish</button><button class="answer" data-correct="false">🐦 Bird</button></div><p id="demoFeedback" class="feedback" aria-live="polite"></p><button class="btn secondary" id="nextWordBtn" type="button">Next word →</button></div></div></div></div></section>
     <section id="mistakes"><div class="container"><div class="section-head reveal"><span class="tag">Practice companion</span><h2>Turn mistakes into next steps.</h2><p>Aiko is an offline practice companion. It checks common beginner patterns in your browser and suggests one small exercise. It is a learning aid, not a full AI tutor, and your text stays on this device.</p></div><div class="checker"><div class="write-card reveal"><h3 style="font-family:var(--font-display);font-size:32px;margin:0 0 10px">✍️ Mistake workshop</h3><p>Write a short English sentence. Example: <strong>She go to school yesterday.</strong></p><label class="sr-only" for="studentText">Your English sentence</label><textarea id="studentText" placeholder="Type your sentence here..."></textarea><div class="checker-actions"><button class="btn primary" onclick="checkMistakes()">Check my sentence</button><button class="btn secondary" onclick="loadExample()">Use example</button><button class="btn secondary" onclick="speakText(document.getElementById('studentText').value)">Listen</button></div><div class="result-box" id="mistakeResult" aria-live="polite"><b>Aiko:</b> I will show: correction, reason and one practice task.</div></div><div class="chat reveal"><h3 style="font-family:var(--font-display);font-size:32px;margin:0 0 10px">🤖 Ask Aiko</h3><div class="chat-window" id="chatWindow" role="log" aria-live="polite" aria-relevant="additions"><div class="msg bot">Hi! I am Aiko. Ask me for reading tips, spelling help, a word meaning, or a short practice exercise.</div></div><div class="quick"><button class="chip" onclick="askAiko('Give me dyslexia reading tips')">Reading tips</button><button class="chip" onclick="askAiko('Help me with spelling')">Spelling help</button><button class="chip" onclick="askAiko('Give me a practice task')">Practice task</button></div><div class="chatbar"><label class="sr-only" for="chatInput">Ask Aiko a question</label><input id="chatInput" placeholder="Ask Aiko..." onkeydown="if(event.key==='Enter')sendChat()"><button class="btn primary" onclick="sendChat()">Send</button></div></div></div></div></section>
     <section><div class="container"><div class="section-head reveal"><span class="tag">Accessibility tools</span><h2>Small controls. Big difference.</h2><p>The website includes settings that help learners feel more comfortable while reading and practicing.</p></div><div class="tools"><article class="tool reveal"><div class="icon yellow">Aa</div><h3>Dyslexia reading mode</h3><p>Increases letter spacing and line height, keeps a calm background and uses a highly readable font.</p></article><article class="tool reveal"><div class="icon blue">◐</div><h3>High contrast mode</h3><p>Helps learners who need stronger separation between text, cards and background.</p></article><article class="tool reveal"><div class="icon mint">▣</div><h3>Reduced motion</h3><p>Stops animations for children who find moving elements distracting.</p></article><article class="tool reveal"><div class="icon pink">🔊</div><h3>Text to speech</h3><p>Lets students hear a word or instruction before answering.</p></article></div></div></section>
-    <section id="presentation" class="presentation"><div class="container"><div class="section-head reveal"><span class="tag">Project presentation</span><h2>6 slides. One clear story.</h2><p>This mini presentation uses soft colors, short text, strong visuals and a clear story.</p></div><div class="slides"><article class="slide reveal"><span class="slide-num">01 · PROBLEM</span><h3>Reading can feel too crowded.</h3><p>Some children need more spacing, audio and step-by-step tasks.</p><div class="mini">💭</div></article><article class="slide reveal"><span class="slide-num">02 · SOLUTION</span><h3>ЕРКЕМAI</h3><p>A dyslexia-friendly English platform with games and learning support.</p><div class="mini">🚀</div></article><article class="slide reveal"><span class="slide-num">03 · AIKO</span><h3>Meet Aiko.</h3><p>Aiko gives advice, checks sentences and helps fix mistakes kindly.</p><div class="mini">🤖</div></article><article class="slide reveal"><span class="slide-num">04 · FEATURES</span><h3>Read. Hear. Try again.</h3><p>Audio, visual choices, mistake review, reading mode and practice tasks.</p><div class="mini">🎧</div></article><article class="slide reveal"><span class="slide-num">05 · DESIGN</span><h3>Easy on the eyes.</h3><p>Warm background, big cards, simple blocks and less visual noise.</p><div class="mini">Aa</div></article><article class="slide reveal"><span class="slide-num">06 · GOAL</span><h3>Confidence first.</h3><p>Children learn better when mistakes become steps, not failures.</p><div class="mini">⭐</div></article></div></div></section>
+    <section id="presentation" class="presentation"><div class="container"><div class="section-head reveal"><span class="tag">Project presentation</span><h2>6 slides. One clear story.</h2><p>This mini presentation uses soft colors, short text, strong visuals and a clear story.</p></div><div class="slides"><article class="slide reveal"><span class="slide-num">01 · PROBLEM</span><h3>Reading can feel too crowded.</h3><p>Some children need more spacing, audio and step-by-step tasks.</p><div class="mini">💭</div></article><article class="slide reveal"><span class="slide-num">02 · SOLUTION</span><h3>YerkemAi</h3><p>A dyslexia-friendly English platform with games and learning support.</p><div class="mini">🚀</div></article><article class="slide reveal"><span class="slide-num">03 · AIKO</span><h3>Meet Aiko.</h3><p>Aiko gives advice, checks sentences and helps fix mistakes kindly.</p><div class="mini">🤖</div></article><article class="slide reveal"><span class="slide-num">04 · FEATURES</span><h3>Read. Hear. Try again.</h3><p>Audio, visual choices, mistake review, reading mode and practice tasks.</p><div class="mini">🎧</div></article><article class="slide reveal"><span class="slide-num">05 · DESIGN</span><h3>Easy on the eyes.</h3><p>Warm background, big cards, simple blocks and less visual noise.</p><div class="mini">Aa</div></article><article class="slide reveal"><span class="slide-num">06 · GOAL</span><h3>Confidence first.</h3><p>Children learn better when mistakes become steps, not failures.</p><div class="mini">⭐</div></article></div></div></section>
     <section id="results"><div class="container"><div class="section-head reveal"><span class="tag">Expected impact</span><h2>What the project tries to improve.</h2><p>These are concept goals for the prototype. Real numbers should be collected later through testing with learners.</p></div><div class="result-cards"><div class="metric reveal"><b>01</b><span>Less reading stress</span></div><div class="metric reveal"><b>02</b><span>More independent practice</span></div><div class="metric reveal"><b>03</b><span>Better mistake awareness</span></div><div class="metric reveal"><b>04</b><span>Higher confidence</span></div></div></div></section>
-    <section class="final"><div class="container"><div class="final-box reveal"><div style="font-size:44px">🌟</div><h2>Every learner deserves a way to shine.</h2><p>ЕРКЕМAI combines dyslexia-friendly design, playful English practice and friendly practice feedback to make learning feel clearer and kinder.</p><button class="btn primary" onclick="window.scrollTo({top:0,behavior:document.body.classList.contains('reduce')?'auto':'smooth'})">Back to the beginning ↑</button></div></div></section>
+    <section class="final"><div class="container"><div class="final-box reveal"><div style="font-size:44px">🌟</div><h2>Every learner deserves a way to shine.</h2><p>YerkemAi combines dyslexia-friendly design, playful English practice and friendly practice feedback to make learning feel clearer and kinder.</p><button class="btn primary" onclick="window.scrollTo({top:0,behavior:document.body.classList.contains('reduce')?'auto':'smooth'})">Back to the beginning ↑</button></div></div></section>
   </main>
-  <footer>ЕРКЕМAI · Dyslexia-Friendly English Learning · Interactive presentation website</footer>
+  <footer>YerkemAi · Dyslexia-Friendly English Learning · Interactive presentation website</footer>
   <script>
+    const journeyLevels=[
+      {code:'A1',name:'Алғашқы сөздер',icon:'🍎',badge:'Сөз тапқыш',questions:[
+        {prompt:'Choose the English word for this picture.',picture:'🐱',pictureAlt:'Мысықтың суреті',choices:[{text:'🐱 Cat',correct:true},{text:'🐶 Dog'},{text:'🐟 Fish'}],explanation:'Cat — «мысық». Сурет пен сөзді дұрыс сәйкестендірдің!',hint:'Мысық ағылшынша cat деп аталады.'},
+        {prompt:'Choose the English word for this picture.',picture:'🍎',pictureAlt:'Алманың суреті',choices:[{text:'🍎 Apple',correct:true},{text:'☀️ Sun'},{text:'📘 Book'}],explanation:'Apple — «алма». Тамаша!',hint:'Бұл жемістің ағылшынша атауы a әрпінен басталады.'},
+        {prompt:'Choose the English word for this picture.',picture:'📚',pictureAlt:'Кітаптардың суреті',choices:[{text:'🪑 Chair'},{text:'📚 Book',correct:true},{text:'⚽ Ball'}],explanation:'Book — «кітап». Жақсы сәйкестендірдің!',hint:'Оқитын затты ағылшынша book дейді.'},
+        {prompt:'Choose the English word for this picture.',picture:'☀️',pictureAlt:'Күннің суреті',choices:[{text:'🌙 Moon'},{text:'⭐ Star'},{text:'☀️ Sun',correct:true}],explanation:'Sun — «күн». Дұрыс жауап!',hint:'Аспанда жарық беретін нысан sun деп аталады.'},
+        {prompt:'Choose the English word for this picture.',picture:'🐶',pictureAlt:'Иттің суреті',choices:[{text:'🐱 Cat'},{text:'🐶 Dog',correct:true},{text:'🐦 Bird'}],explanation:'Dog — «ит». A1 деңгейінің бес жұлдызын жинадың!',hint:'Бұл үй жануарының ағылшынша атауы d әрпінен басталады.'}
+      ]},
+      {code:'A2',name:'Қысқа сөйлемдер',icon:'💬',badge:'Сөйлем құрастырушы',questions:[
+        {prompt:'I ___ a student.',picture:'🎒',pictureAlt:'Мектеп сөмкесі',choices:[{text:'am',correct:true},{text:'is'},{text:'are'}],explanation:'I сөзімен am қолданылады: I am — «Мен ...мын / ...мін».',hint:'I сөзінен кейін am келеді.'},
+        {prompt:'She ___ happy.',picture:'😊',pictureAlt:'Күлімдеген жүз',choices:[{text:'am'},{text:'is',correct:true},{text:'are'}],explanation:'She сөзімен is қолданылады: She is happy — «Ол қуанышты».',hint:'She — бір адам туралы, сондықтан is таңда.'},
+        {prompt:'They ___ football after school.',picture:'⚽',pictureAlt:'Футбол добы',choices:[{text:'plays'},{text:'play',correct:true},{text:'playing'}],explanation:'They сөзімен етістіктің бастапқы түрі қолданылады: they play.',hint:'They көп адамды білдіреді. Етістікке -s қоспа.'},
+        {prompt:'Where ___ you live?',picture:'🏠',pictureAlt:'Үйдің суреті',choices:[{text:'does'},{text:'do',correct:true},{text:'are'}],explanation:'You сөзімен сұрақта do қолданылады: Where do you live?',hint:'You сөзімен сұрақты do арқылы баста.'},
+        {prompt:'He ___ not like milk.',picture:'🥛',pictureAlt:'Бір стақан сүт',choices:[{text:'do'},{text:'does',correct:true},{text:'is'}],explanation:'He сөзімен болымсыз сөйлемде does not қолданылады.',hint:'He сөзіне сәйкес көмекші етістік: does.'}
+      ]},
+      {code:'B1',name:'Грамматика шебері',icon:'🧩',badge:'Грамматика жұлдызы',questions:[
+        {prompt:'We stayed home because it ___ raining.',picture:'🌧️',pictureAlt:'Жаңбырлы ауа райы',choices:[{text:'was',correct:true},{text:'were'},{text:'are'}],explanation:'It — жекеше бастауыш. Өткен шақта it was деп айтамыз.',hint:'It сөзімен өткен шақтағы be етістігін таңда.'},
+        {prompt:'I have lived here ___ 2020.',picture:'🗓️',pictureAlt:'Күнтізбе',choices:[{text:'for'},{text:'since',correct:true},{text:'during'}],explanation:'Since нақты басталған уақытты көрсетеді: since 2020 — «2020 жылдан бері».',hint:'Жыл сияқты нақты басталу нүктесіне since қолданылады.'},
+        {prompt:'Mira is taller ___ her brother.',picture:'📏',pictureAlt:'Өлшеу сызғышы',choices:[{text:'then'},{text:'than',correct:true},{text:'that'}],explanation:'Салыстырғанда than қолданылады: taller than — «... қарағанда бойшаң».',hint:'Салыстырудағы дұрыс сөздің жазылуы: t-h-a-n.'},
+        {prompt:'If it rains tomorrow, we ___ inside.',picture:'☔',pictureAlt:'Қолшатыр',choices:[{text:'stay'},{text:'will stay',correct:true},{text:'stayed'}],explanation:'Бірінші шартты сөйлемде If-тен кейін осы шақ, негізгі бөлікте will қолданылады.',hint:'Бұл ертең болуы мүмкін жағдай. Нәтижесіне will қос.'},
+        {prompt:'The book ___ by my friend yesterday.',picture:'📖',pictureAlt:'Ашық кітап',choices:[{text:'was read',correct:true},{text:'read'},{text:'is reading'}],explanation:'Кітап әрекетті өзі істемейді. Өткен шақтағы ырықсыз етіс: was read.',hint:'Кітапты досың оқыды. Сөйлемді was + етістіктің үшінші түрімен құр.'}
+      ]},
+      {code:'B2',name:'Мәтін зерттеушісі',icon:'📚',badge:'Мәтін шебері',questions:[
+        {prompt:'What was the garden’s first purpose?',picture:'🌱',pictureAlt:'Өсіп келе жатқан өскін',passage:'At first, the school garden was only a science project. Later, students shared its vegetables with a community kitchen.',choices:[{text:'A science project',correct:true},{text:'A sports field'},{text:'A school shop'}],explanation:'Алғашқы сөйлемде бақтың әуелде жаратылыстану жобасы болғаны айтылған.',hint:'Жауапты мәтіннің бірінші сөйлемінен ізде.'},
+        {prompt:'Why did the students measure the water?',picture:'💧',pictureAlt:'Су тамшысы',passage:'The class measured how much water each plant needed. This helped them care for the garden without wasting water.',choices:[{text:'To find what each plant needed',correct:true},{text:'To build a swimming pool'},{text:'To make the plants grow overnight'}],explanation:'Өлшеу әр өсімдікке қажет су мөлшерін білуге көмектесті.',hint:'Мәтінде “how much water each plant needed” деген сөздерді тап.'},
+        {prompt:'Why did Amina start walking to school once a week?',picture:'🚶',pictureAlt:'Жаяу жүріп бара жатқан бала',passage:'Amina usually took the bus. Once a week, she walked to notice how the neighborhood changed with the seasons.',choices:[{text:'She wanted to notice seasonal changes',correct:true},{text:'The bus stopped running forever'},{text:'She wanted to arrive later'}],explanation:'Амина жыл мезгілдерімен бірге ауданның қалай өзгеретінін байқағысы келді.',hint:'Оның не байқағысы келгенін мәтіннің соңынан ізде.'},
+        {prompt:'What can we infer about the reading club?',picture:'📖',pictureAlt:'Кітап оқып отырған бала',passage:'The reading club planned to meet for thirty minutes. Each week, the students asked to stay a little longer, so the teacher added ten minutes.',choices:[{text:'Students enjoyed the club',correct:true},{text:'Students disliked reading'},{text:'The club had no books'}],explanation:'Оқушылар тағы қалуды сұрады. Бұл олардың клубты ұнатқанын аңғартады.',hint:'Оқушылардың қосымша уақыт сұрауы олардың көңіл күйі туралы не айтады?'},
+        {prompt:'What is the best summary?',picture:'🧤',pictureAlt:'Қолғап',passage:'Although the morning was cold, Dana planted the seeds. She covered them with a cloth at night and checked them every few days.',choices:[{text:'Dana cared for the seeds despite the cold',correct:true},{text:'Dana forgot to plant the seeds'},{text:'The seeds grew in one day'}],explanation:'Мәтінде Дана суыққа қарамастан тұқым отырғызып, оған күтім жасағаны баяндалады.',hint:'Мәтіндегі негізгі әрекеттерді біріктіріп, ең толық қорытындыны таңда.'}
+      ]}
+    ];
+
+    const journeyStorageKey='yerkemai-learning-progress-v1';
+    const freshJourneyProgress=()=>({unlocked:0,active:0,scores:[0,0,0,0],completed:[false,false,false,false],answered:Array.from({length:4},()=>Array(5).fill(false)),questions:[0,0,0,0]});
+    function loadJourneyProgress(){
+      try{
+        const saved=JSON.parse(localStorage.getItem(journeyStorageKey)||'null');
+        if(!saved||typeof saved!=='object')return freshJourneyProgress();
+        const fresh=freshJourneyProgress();
+        for(let i=0;i<4;i++){
+          fresh.scores[i]=Math.max(0,Math.min(5,Number(saved.scores?.[i])||0));
+          fresh.completed[i]=Boolean(saved.completed?.[i])||fresh.scores[i]>=5;
+          fresh.answered[i]=Array.from({length:5},(_,j)=>Boolean(saved.answered?.[i]?.[j]));
+          fresh.questions[i]=Math.max(0,Math.min(4,Number(saved.questions?.[i])||0));
+          if(fresh.completed[i])fresh.unlocked=Math.max(fresh.unlocked,Math.min(3,i+1));
+        }
+        fresh.unlocked=Math.max(fresh.unlocked,Math.max(0,Math.min(3,Number(saved.unlocked)||0)));
+        fresh.active=Math.max(0,Math.min(fresh.unlocked,Number(saved.active)||0));
+        return fresh;
+      }catch{return freshJourneyProgress()}
+    }
+    let journeyProgress=loadJourneyProgress();
+    let journeyReviewMode=false;
+    function saveJourneyProgress(){try{localStorage.setItem(journeyStorageKey,JSON.stringify(journeyProgress))}catch{}}
+    function updateJourneyMap(){
+      const total=journeyProgress.scores.reduce((sum,score)=>sum+score,0);
+      byId('journeyTotalScore').textContent=String(total);
+      byId('journeyTotalProgress').value=total;
+      journeyLevels.forEach((level,index)=>{
+        const button=document.querySelector('[data-journey-level="'+index+'"]');
+        const locked=index>journeyProgress.unlocked;
+        button.disabled=locked;
+        button.classList.toggle('is-active',index===journeyProgress.active);
+        button.classList.toggle('is-locked',locked);
+        button.classList.toggle('is-done',journeyProgress.completed[index]);
+        button.setAttribute('aria-pressed',String(index===journeyProgress.active));
+        byId('journeyPoints'+index).textContent=journeyProgress.scores[index]+' / 5 ⭐';
+        byId('journeyStatus'+index).textContent=locked?'🔒 Құлыптаулы':journeyProgress.completed[index]?'🏅 Өтілді':index===journeyProgress.active?'Қазір ойнап жатырсың':'Ойнауға ашық';
+      });
+    }
+    function showJourneyReward(reviewFinished){
+      const level=journeyLevels[journeyProgress.active];
+      const lastLevel=journeyProgress.active===journeyLevels.length-1;
+      byId('journeyQuestionPanel').hidden=true;
+      byId('journeyReward').hidden=false;
+      byId('journeyRewardIcon').textContent=reviewFinished?'✨':level.icon;
+      byId('journeyEarnedBadge').textContent=reviewFinished?'Қайталау аяқталды':level.code+' төсбелгісі · '+level.badge;
+      byId('journeyRewardTitle').textContent=reviewFinished?'Тамаша қайталадың!':lastLevel?'Барлық деңгейді аяқтадың!':'Жарайсың! 5 жұлдыз жинадың!';
+      byId('journeyRewardText').textContent=reviewFinished?'Бұл деңгейді қайталап шықтың. Жиналған ұпайларың сақталды.':lastLevel?'Сен A1, A2, B1 және B2 деңгейлерінен өттің. Барлығы 20 жұлдыз бен 4 төсбелгі!':journeyLevels[journeyProgress.active+1].code+' деңгейі ашылды. Келесі тапсырмаларды асықпай орындауға дайынсың.';
+      byId('journeyContinue').hidden=lastLevel||reviewFinished;
+      if(!lastLevel&&!reviewFinished)byId('journeyContinue').textContent=journeyLevels[journeyProgress.active+1].code+' деңгейіне өту →';
+      byId('journeyReplay').hidden=!journeyProgress.completed[journeyProgress.active]||reviewFinished;
+      byId('journeyReplay').textContent='Деңгейді қайталау';
+    }
+    function renderJourneyQuestion(){
+      const levelIndex=journeyProgress.active;
+      const level=journeyLevels[levelIndex];
+      const questionIndex=journeyProgress.questions[levelIndex];
+      const question=level.questions[questionIndex];
+      byId('journeyCurrentLevel').textContent=level.code+' · '+level.name;
+      byId('journeyQuestionCount').textContent='Тапсырма '+(questionIndex+1)+' / '+level.questions.length;
+      byId('journeyLevelScore').textContent=String(journeyProgress.scores[levelIndex]);
+      byId('journeyLevelProgress').value=journeyProgress.scores[levelIndex];
+      byId('journeyPrompt').textContent=question.prompt;
+      byId('journeyPicture').textContent=question.picture||'';
+      byId('journeyPicture').setAttribute('aria-label',question.pictureAlt||'Оқу тапсырмасының суреті');
+      byId('journeyPassage').textContent=question.passage||'';
+      byId('journeyPassage').hidden=!question.passage;
+      byId('journeyFeedback').textContent='Асықпай ойлан. Сенің қолыңнан келеді!';
+      byId('journeyFeedback').className='journey-feedback';
+      byId('journeyNext').hidden=true;
+      const answers=byId('journeyAnswers');
+      answers.replaceChildren();
+      question.choices.forEach((choice,index)=>{
+        const button=document.createElement('button');
+        button.type='button';
+        button.className='journey-answer';
+        button.textContent=choice.text;
+        button.lang=levelIndex===0?'en':'en';
+        button.dataset.correct=String(Boolean(choice.correct));
+        button.setAttribute('aria-pressed','false');
+        button.addEventListener('click',()=>chooseJourneyAnswer(button,question));
+        answers.appendChild(button);
+      });
+      byId('journeyQuestionPanel').hidden=false;
+      byId('journeyReward').hidden=true;
+    }
+    function renderJourney(){
+      updateJourneyMap();
+      const levelIndex=journeyProgress.active;
+      if(journeyProgress.scores[levelIndex]>=5&&!journeyReviewMode){showJourneyReward(false);return}
+      if(journeyReviewMode&&journeyProgress.questions[levelIndex]>=journeyLevels[levelIndex].questions.length){showJourneyReward(true);return}
+      renderJourneyQuestion();
+    }
+    function chooseJourneyAnswer(button,question){
+      const levelIndex=journeyProgress.active;
+      const questionIndex=journeyProgress.questions[levelIndex];
+      const feedback=byId('journeyFeedback');
+      if(button.dataset.correct==='true'){
+        const newStar=!journeyProgress.answered[levelIndex][questionIndex]&&!journeyReviewMode;
+        if(newStar){
+          journeyProgress.answered[levelIndex][questionIndex]=true;
+          journeyProgress.scores[levelIndex]=Math.min(5,journeyProgress.scores[levelIndex]+1);
+          byId('journeyLevelScore').textContent=String(journeyProgress.scores[levelIndex]);
+          byId('journeyLevelProgress').value=journeyProgress.scores[levelIndex];
+          if(journeyProgress.scores[levelIndex]===5){
+            journeyProgress.completed[levelIndex]=true;
+            journeyProgress.unlocked=Math.max(journeyProgress.unlocked,Math.min(3,levelIndex+1));
+          }
+          saveJourneyProgress();
+          updateJourneyMap();
+        }
+        feedback.textContent=(newStar?'Дұрыс! +1 жұлдыз. ':'Дұрыс! Бұл жауап үшін жұлдыз бұрын берілген. ')+question.explanation;
+        feedback.className='journey-feedback is-correct';
+        byId('journeyAnswers').querySelectorAll('button').forEach(answer=>{answer.disabled=true;answer.setAttribute('aria-pressed',String(answer===button))});
+        button.classList.add('is-right');
+        if(journeyProgress.scores[levelIndex]>=5&&!journeyReviewMode){showJourneyReward(false);return}
+        byId('journeyNext').hidden=journeyProgress.scores[levelIndex]>=5&&!journeyReviewMode;
+      }else{
+        button.disabled=true;
+        button.classList.add('is-wrong');
+        button.setAttribute('aria-pressed','true');
+        feedback.textContent='Бұл жолы ұпай шегерілмейді. '+question.hint+' Қайта байқап көр!';
+        feedback.className='journey-feedback is-try';
+      }
+    }
+    document.querySelectorAll('[data-journey-level]').forEach(button=>button.addEventListener('click',()=>{
+      journeyProgress.active=Number(button.dataset.journeyLevel);
+      journeyReviewMode=false;
+      saveJourneyProgress();
+      renderJourney();
+      byId('journeyPrompt').focus();
+    }));
+    byId('journeyNext').addEventListener('click',()=>{
+      journeyProgress.questions[journeyProgress.active]+=1;
+      saveJourneyProgress();
+      renderJourney();
+      if(!byId('journeyQuestionPanel').hidden)byId('journeyPrompt').focus();
+    });
+    byId('journeyListen').addEventListener('click',()=>{
+      const level=journeyLevels[journeyProgress.active];
+      const question=level.questions[journeyProgress.questions[journeyProgress.active]];
+      speakText((question.passage?question.passage+' ':'')+question.prompt);
+    });
+    byId('journeyContinue').addEventListener('click',()=>{
+      if(journeyProgress.active<journeyLevels.length-1){
+        journeyProgress.active+=1;
+        journeyReviewMode=false;
+        saveJourneyProgress();
+        renderJourney();
+        byId('journeyPrompt').focus();
+      }
+    });
+    byId('journeyReplay').addEventListener('click',()=>{
+      journeyReviewMode=true;
+      journeyProgress.questions[journeyProgress.active]=0;
+      saveJourneyProgress();
+      renderJourney();
+      byId('journeyPrompt').focus();
+    });
+    renderJourney();
     const byId=id=>document.getElementById(id);
     if('IntersectionObserver' in window){
       const observer=new IntersectionObserver(entries=>entries.forEach(entry=>{if(entry.isIntersecting){entry.target.classList.add('visible');observer.unobserve(entry.target)}}),{threshold:.12});
@@ -152,7 +475,7 @@
 
     function addMsg(text,type){const windowElement=byId('chatWindow');const message=document.createElement('div');message.className='msg '+type;message.textContent=text;windowElement.appendChild(message);windowElement.scrollTop=windowElement.scrollHeight}
     function sendChat(){const input=byId('chatInput');const question=input.value.trim();if(!question)return;input.value='';addMsg(question,'user');window.setTimeout(()=>addMsg(aikoAnswer(question),'bot'),180)}
-    function askErketai(question){addMsg(question,'user');window.setTimeout(()=>addMsg(aikoAnswer(question),'bot'),180)}
+    function askAiko(question){addMsg(question,'user');window.setTimeout(()=>addMsg(aikoAnswer(question),'bot'),180)}
     function aikoAnswer(question){
       const q=question.toLowerCase();
       if(/[а-яё]/i.test(q)){
