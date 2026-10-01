@@ -207,7 +207,105 @@
     <section class="final"><div class="container"><div class="final-box reveal"><div style="font-size:44px">🌟</div><h2>Every learner deserves a way to shine.</h2><p>YerkemAi combines dyslexia-friendly design, playful English practice and friendly practice feedback to make learning feel clearer and kinder.</p><button class="btn primary" onclick="window.scrollTo({top:0,behavior:document.body.classList.contains('reduce')?'auto':'smooth'})">Back to the beginning ↑</button></div></div></section>
   </main>
   <footer>YerkemAi · Dyslexia-Friendly English Learning · Interactive presentation website</footer>
-  <script>
+  <script>    const byId=id=>document.getElementById(id);
+    if('IntersectionObserver' in window){
+      const observer=new IntersectionObserver(entries=>entries.forEach(entry=>{if(entry.isIntersecting){entry.target.classList.add('visible');observer.unobserve(entry.target)}}),{threshold:.12});
+      document.querySelectorAll('.reveal').forEach(element=>observer.observe(element));
+    }else{document.querySelectorAll('.reveal').forEach(element=>element.classList.add('visible'))}
+    const go=selector=>document.querySelector(selector)?.scrollIntoView({behavior:document.body.classList.contains('reduce')?'auto':'smooth'});
+    function syncModeButtons(){document.querySelectorAll('.smallbtn[onclick^="toggleMode"]').forEach(button=>{const mode=button.getAttribute('onclick').match(/toggleMode\('([^']+)'\)/)?.[1];if(mode)button.setAttribute('aria-pressed',String(document.body.classList.contains(mode)))})}
+    function toggleMode(mode){document.body.classList.toggle(mode);try{localStorage.setItem('mode-'+mode,document.body.classList.contains(mode)?'1':'0')}catch{}syncModeButtons()}
+    ['dyslexia','contrast','reduce'].forEach(mode=>{try{if(localStorage.getItem('mode-'+mode)==='1')document.body.classList.add(mode)}catch{}});syncModeButtons();
+    function speakText(text,statusId){const clean=String(text||'').trim();if(!clean)return;if(!('speechSynthesis' in window)){if(statusId&&byId(statusId))byId(statusId).textContent='Audio is not available in this browser. You can still read the line here.';else addMsg('Audio is not available in this browser. You can still read the text here.','bot');return}window.speechSynthesis.cancel();const utterance=new SpeechSynthesisUtterance(clean);utterance.lang=/[А-Яа-яЁё]/.test(clean)?'ru-RU':'en-US';utterance.rate=.82;utterance.pitch=1;window.speechSynthesis.speak(utterance)}
+
+    const readerStories={dog:{title:'Mia and the Dog',lines:['Mia has a little dog.','The dog likes a red ball.','They play by the green tree.','Then Mia and her dog sit and rest.','Mia smiles. She did it!']},moon:{title:'Trip to the Moon',lines:['Sam sees a bright moon.','He builds a silver rocket.','His cat joins the trip.','They wave at a sleepy star.','They fly home for lunch.']},garden:{title:'Ben’s Garden',lines:['Ben finds a tiny seed.','He gives it a little water.','A green leaf peeks out.','A yellow flower says hello.','Ben smiles at his garden.']}};
+    const readerDefaults={size:'24',font:'atkinson',spacing:'1.9',tone:'cream',line:'0',story:'dog'};
+    function readSavedReaderSetting(name){try{return localStorage.getItem('reader-'+name)||readerDefaults[name]}catch{return readerDefaults[name]}}
+    function saveReaderSetting(name,value){try{localStorage.setItem('reader-'+name,value)}catch{}};let readerStoryName=readSavedReaderSetting('story');if(!readerStories[readerStoryName])readerStoryName='dog';let readerStory=readerStories[readerStoryName].lines;
+    let readerIndex=Math.max(0,Math.min(readerStory.length-1,Number(readSavedReaderSetting('line'))||0));
+    function updateReaderLine(){if('speechSynthesis' in window)window.speechSynthesis.cancel();const finished=readerIndex===readerStory.length-1;byId('readerStoryTitle').textContent=readerStories[readerStoryName].title;byId('readerLine').textContent=readerStory[readerIndex];byId('readerProgress').value=readerIndex+1;byId('readerPosition').textContent=(readerIndex+1)+' / '+readerStory.length;byId('readerPrevBtn').disabled=readerIndex===0;byId('readerNextBtn').hidden=finished;byId('readerRestartBtn').hidden=!finished;byId('readerStatus').textContent=finished?'You finished the little story. You can stop here, read again, or choose another activity.':'Take your time. You can listen or read quietly.';saveReaderSetting('line',String(readerIndex))}
+    function setReaderFontSize(){const size=byId('readerSize').value;byId('readerLine').style.fontSize=size+'px';byId('readerSizeValue').textContent=size+' px';saveReaderSetting('size',size)}
+    function setReaderFont(){const font=byId('readerFont').value;byId('readerLine').style.fontFamily=font==='arial'?'Arial, sans-serif':"'Atkinson Hyperlegible', Arial, sans-serif";saveReaderSetting('font',font)}
+    function setReaderSpacing(){const spacing=byId('readerSpacing').value;byId('readerLine').style.lineHeight=spacing;saveReaderSetting('spacing',spacing)}
+    function setReaderTone(tone){byId('readerPage').dataset.tone=tone;saveReaderSetting('tone',tone)}
+    byId('readerStoryChoice').value=readerStoryName;byId('readerSize').value=readSavedReaderSetting('size');byId('readerFont').value=readSavedReaderSetting('font');byId('readerSpacing').value=readSavedReaderSetting('spacing');
+    document.querySelector('input[name="readerTone"][value="'+readSavedReaderSetting('tone')+'"]')?.click();setReaderTone(readSavedReaderSetting('tone'));
+    setReaderFontSize();setReaderFont();setReaderSpacing();updateReaderLine();
+    byId('readerStoryChoice').addEventListener('change',()=>{readerStoryName=byId('readerStoryChoice').value;readerStory=readerStories[readerStoryName].lines;readerIndex=0;saveReaderSetting('story',readerStoryName);updateReaderLine()});byId('readerSize').addEventListener('input',setReaderFontSize);byId('readerFont').addEventListener('change',setReaderFont);byId('readerSpacing').addEventListener('change',setReaderSpacing);
+    document.querySelectorAll('input[name="readerTone"]').forEach(input=>input.addEventListener('change',()=>setReaderTone(input.value)));
+    byId('readerPrevBtn').addEventListener('click',()=>{if(readerIndex>0){readerIndex--;updateReaderLine()}});
+    byId('readerNextBtn').addEventListener('click',()=>{if(readerIndex<readerStory.length-1){readerIndex++;updateReaderLine()}});
+    byId('readerRestartBtn').addEventListener('click',()=>{readerIndex=0;updateReaderLine();byId('readerLine').focus()});
+    byId('readLineBtn').addEventListener('click',()=>speakText(byId('readerLine').textContent,'readerStatus'));
+    byId('stopReadingBtn').addEventListener('click',()=>{if('speechSynthesis' in window)window.speechSynthesis.cancel();byId('readerStatus').textContent='Audio stopped. Continue whenever you are ready.'});byId('readerResetSettings').addEventListener('click',()=>{byId('readerSize').value=readerDefaults.size;byId('readerFont').value=readerDefaults.font;byId('readerSpacing').value=readerDefaults.spacing;const cream=document.querySelector('input[name="readerTone"][value="cream"]');if(cream)cream.checked=true;setReaderTone('cream');setReaderFontSize();setReaderFont();setReaderSpacing();byId('readerStatus').textContent='Reading settings are back to the usual view.'});
+
+    const quizRounds=[
+      {word:'DOG',sound:'Dog',choices:['🐱 Cat','🐶 Dog','🐟 Fish','🐦 Bird'],answer:'Dog'},
+      {word:'APPLE',sound:'Apple',choices:['🍌 Banana','🍎 Apple','🥕 Carrot','🍋 Lemon'],answer:'Apple'},
+      {word:'SUN',sound:'Sun',choices:['🌙 Moon','⭐ Star','☀️ Sun','☁️ Cloud'],answer:'Sun'},
+      {word:'BOOK',sound:'Book',choices:['✏️ Pencil','🪑 Chair','📘 Book','☕ Cup'],answer:'Book'},
+      {word:'FISH',sound:'Fish',choices:['🐸 Frog','🐠 Fish','🐰 Rabbit','🦋 Butterfly'],answer:'Fish'}
+    ];
+    let quizIndex=-1;
+    function nextWord(){quizIndex=(quizIndex+1)%quizRounds.length;const round=quizRounds[quizIndex];byId('quizWord').textContent=round.word;byId('quizPrompt').textContent='Choose the picture that matches the word · '+(quizIndex+1)+' of '+quizRounds.length;byId('demoFeedback').textContent='';const choices=byId('quizAnswers');choices.replaceChildren();round.choices.forEach(choice=>{const button=document.createElement('button');button.type='button';button.className='answer';button.textContent=choice;button.dataset.answer=choice.slice(choice.indexOf(' ')+1);button.setAttribute('aria-pressed','false');choices.appendChild(button)})}
+    byId('nextWordBtn').addEventListener('click',nextWord);
+    byId('quizAnswers').addEventListener('click',event=>{const button=event.target.closest('.answer');if(!button)return;const round=quizRounds[quizIndex];byId('quizAnswers').querySelectorAll('.answer').forEach(choice=>{choice.classList.remove('correct','wrong');choice.setAttribute('aria-pressed','false')});const correct=button.dataset.answer===round.answer;button.classList.add(correct?'correct':'wrong');button.setAttribute('aria-pressed','true');const message=correct?'✨ Aiko: Great job! You matched the word and picture.':'💡 Aiko: Good try. Listen to the word, then look for the picture that matches it.';byId('demoFeedback').textContent=message;byId('demoFeedback').style.color=correct?'#159b82':'#e84f72';byId('aikoSpeech').textContent=message});
+    nextWord();
+
+    const verbForms={go:'goes',like:'likes',want:'wants',play:'plays',read:'reads',write:'writes',eat:'eats',drink:'drinks',watch:'watches',study:'studies',have:'has',do:'does',walk:'walks',visit:'visits',work:'works'};
+    const pastForms={go:['go','goes','went'],do:['do','does','did'],have:['have','has','had'],am:['am','was'],is:['is','was'],are:['are','were'],eat:['eat','eats','ate'],see:['see','sees','saw'],make:['make','makes','made'],get:['get','gets','got'],take:['take','takes','took'],come:['come','comes','came'],write:['write','writes','wrote'],read:['reads','read'],play:['play','plays','played'],walk:['walk','walks','walked'],visit:['visit','visits','visited'],study:['study','studies','studied'],watch:['watch','watches','watched'],work:['work','works','worked']};
+    function sentenceCase(value){return value.replace(/(^|[.!?]\s+)([a-z])/g,(_,prefix,letter)=>prefix+letter.toUpperCase())}
+    function escapeHTML(value){return String(value).replace(/[&<>"']/g,char=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[char]))}
+    function loadExample(){byId('studentText').value='she go to school yesterday. i have a apple';checkMistakes()}
+    function checkMistakes(){
+      const original=byId('studentText').value.trim();const box=byId('mistakeResult');
+      if(!original){box.innerHTML='<b>Aiko:</b> Type one short sentence first. I will help you step by step.';return}
+      let corrected=original;const found=[];const add=(before,after,message,task)=>{if(before!==after&&found.length<5&&!found.some(item=>item.message===message))found.push({message,task})};
+      const apply=(pattern,replacer,message,task)=>{const before=corrected;corrected=corrected.replace(pattern,replacer);add(before,corrected,message,task)};
+      const isPast=/\b(yesterday|last\s+(?:week|night|month|year)|\d+\s+days?\s+ago|this\s+morning)\b/i.test(corrected);
+      if(isPast){
+        Object.values(pastForms).forEach(forms=>{const past=forms[forms.length-1];if(forms.length<2)return;const present=forms.slice(0,-1).map(value=>value.replace(/[.*+?^${}()|[\]\\]/g,'\\$&')).join('|');if(present===past)return;apply(new RegExp('\\b(?:'+present+')\\b','gi'),past,'A past-time word is a clue to use the past form of the verb.','Write one more sentence about something you did yesterday.')});
+      }
+      apply(/\b(she|he|it)\s+(go|like|want|play|read|write|eat|drink|watch|study|have|do|walk|visit|work)\b/gi,(_,subject,verb)=>subject+' '+(verbForms[verb.toLowerCase()]||verb+'s'),'With he, she or it in the present, the verb usually needs -s or -es.','Try: He plays a game.','present verb');
+      apply(/\b(i|you|we|they)\s+(goes|likes|wants|plays|reads|writes|eats|drinks|watches|studies|has|does|walks|visits|works)\b/gi,(_,subject,verb)=>{const base=Object.keys(verbForms).find(key=>verbForms[key]===verb.toLowerCase())||({has:'have',does:'do'}[verb.toLowerCase()]);return subject+' '+(base||verb)},'With I, you, we or they, use the base verb form.','Try: They like music.','base verb');
+      apply(/\b(i|he|she|it|you|we|they)\s+(am|is|are)\b/gi,(_,subject,verb)=>{const expected={i:'am',he:'is',she:'is',it:'is',you:'are',we:'are',they:'are'}[subject.toLowerCase()];return subject+' '+(verb.toLowerCase()===expected?verb:expected)},'Use the matching form of be: I am, he/she/it is, you/we/they are.','Try: I am ready.','be form');
+      apply(/\b(i|he|she|it|you|we|they)\s+(happy|sad|ready|tired|hungry|excited|kind|small|big|at\s+school)\b/gi,(_,subject,description)=>subject+' '+({i:'am',he:'is',she:'is',it:'is',you:'are',we:'are',they:'are'}[subject.toLowerCase()])+' '+description,'Add am, is or are before a describing word.','Try: She is happy.','missing be');
+      apply(/\b(a|an)\s+([a-z][a-z-]*)\b/gi,(_,article,word)=>{const vowel=/^(?:hour|honest|honor|honour|heir)/i.test(word)||(/^[aeiou]/i.test(word)&&!/^(?:uni|use|usual|euro|one|once|ouija)/i.test(word));return article.toLowerCase()===(vowel?'an':'a')?article:(vowel?'an ':'a ')+word},'Use a before a consonant sound and an before a vowel sound.','Try: an apple and a book.','a/an');
+      apply(/\bi\b/g,'I','The word I is always capitalized in English.','Write: I am ready.','capital I');
+      apply(/\s+([,.!?])/g,'$1','Remove the space before punctuation.','Read the sentence once and check the full stop.','punctuation');
+      apply(/([.!?]){2,}/g,'$1','Use one ending mark at a time.','Finish your sentence with one full stop.','ending mark');
+      apply(/(^|[.!?]\s+)([a-z])/g,(_,prefix,letter)=>prefix+letter.toUpperCase(),'Start each sentence with a capital letter.','Check the first letter of each sentence.','capital letter');
+      const alreadyPast=/\b(went|did|had|was|were|ate|saw|made|got|took|came|wrote|read|played|walked|visited|studied|watched|worked)\b/i.test(corrected);let extraPastNote='';if(isPast&&!alreadyPast&&!found.some(item=>item.message.startsWith('A past-time'))){extraPastNote=' I noticed a past-time word, but could not safely change the verb, so please check it with a teacher.'}
+      if(corrected===original){box.innerHTML='<b>Aiko:</b> Nice work! I did not spot a common beginner pattern in this sentence.'+escapeHTML(extraPastNote)+'<br><br><b>Try next:</b> Read it aloud slowly and see if each word sounds right.';return}
+      if(!/[.!?]$/.test(corrected))corrected+='.';
+      const tips=found.map(item=>'<li>'+escapeHTML(item.message)+'</li>').join('');const exercise=found[0]?.task||'Read the improved sentence aloud once.';
+      box.innerHTML='<b>Aiko:</b> Good try. Let’s improve it one step at a time.<br><br><b>Try this version:</b> '+escapeHTML(corrected)+'<br><br><b>What to practice:</b><ul>'+tips+'</ul><b>One small exercise:</b> '+escapeHTML(exercise);
+    }
+
+    function addMsg(text,type){const windowElement=byId('chatWindow');const message=document.createElement('div');message.className='msg '+type;message.textContent=text;windowElement.appendChild(message);windowElement.scrollTop=windowElement.scrollHeight}
+    function sendChat(){const input=byId('chatInput');const question=input.value.trim();if(!question)return;input.value='';addMsg(question,'user');window.setTimeout(()=>addMsg(aikoAnswer(question),'bot'),180)}
+    function askAiko(question){addMsg(question,'user');window.setTimeout(()=>addMsg(aikoAnswer(question),'bot'),180)}
+    function aikoAnswer(question){
+      const q=question.toLowerCase();
+      if(/[а-яё]/i.test(q)){
+        if(/чита|дислекс|текст/.test(q))return 'Попробуй читать по одной короткой строке, прикрывать лишний текст листом и сначала слушать незнакомое слово. Выбери тот способ, с которым тебе спокойнее.';
+        if(/ошиб|ошибка|исправ|граммат/.test(q))return 'Ошибки помогают понять, что потренировать. Вставь короткое английское предложение в мастерскую слева — я проверю несколько распространённых правил.';
+        if(/слово|перев|значит/.test(q)){const match=q.match(/(?:слово|переведи|значит)\s+([a-z]+)/i);const dictionary={dog:'собака',cat:'кошка',book:'книга',apple:'яблоко',school:'школа',happy:'счастливый',friend:'друг',fish:'рыба',sun:'солнце'};if(match&&dictionary[match[1].toLowerCase()])return match[1]+' значит «'+dictionary[match[1].toLowerCase()]+'». Нажми кнопку «Hear word» в упражнении, чтобы послушать английское произношение.';return 'Напиши английское слово после слова «переведи», например: «переведи apple».';}
+        if(/задани|практик|упражнен/.test(q))return 'Небольшое задание: напиши по-английски одно предложение со словом school. Потом проверь его в мастерской предложений.';
+        if(/произнош|звук|слуш/.test(q))return 'Нажми «Hear word», послушай слово и повтори его медленно. Потом попробуй сказать короткую фразу с этим словом.';
+        return 'Я Aiko, помощник для практики английского. Спроси меня о чтении, правописании, переводе простых слов или небольшом задании.';
+      }
+      if(q.includes('reading')||q.includes('dyslexia'))return 'Try one short line at a time. You can cover the next lines, listen to a new word first, and choose the spacing and colors that feel comfortable for you.';
+      if(q.includes('spell'))return 'Say the word slowly, listen for its parts, write it once, cover it, then try again. If one part is tricky, practice just that part first.';
+      if(q.includes('practice')||q.includes('exercise'))return 'Small practice: write one sentence with the word “school”. Then paste it into the sentence workshop and look at one suggestion at a time.';
+      if(q.includes('pronunciation')||q.includes('sound')||q.includes('listen'))return 'Listen to the word, repeat it slowly, then say it in a short sentence. Clear sounds matter more than speed.';
+      if(q.includes('mistake')||q.includes('error')||q.includes('correct'))return 'Mistakes are clues about what to practice. Paste one short English sentence into the workshop and I will check a few common patterns.';
+      if(q.includes('hello')||q.includes('hi ')||q==='hi'||q.includes('who are you'))return 'Hi! I am Aiko, your English practice companion. Ask me for a reading tip, a word translation, or a short exercise.';
+      const wordMatch=q.match(/(?:translate|meaning of|what does)\s+["']?([a-z]+)["']?/i);const dictionary={dog:'собака',cat:'кошка',book:'книга',apple:'яблоко',school:'школа',happy:'счастливый',friend:'друг',fish:'рыба',sun:'солнце'};
+      if(wordMatch&&dictionary[wordMatch[1]])return '“'+wordMatch[1]+'” means “'+dictionary[wordMatch[1]]+'” in Russian. Press “Hear word” to listen to it.';
+      return 'I can help with reading tips, spelling, simple word meanings, pronunciation and short practice. Tell me which one you want to try.';
+    }
+  
     const journeyLevels=[
       {code:'A1',name:'Алғашқы сөздер',icon:'🍎',badge:'Сөз тапқыш',questions:[
         {prompt:'Choose the English word for this picture.',picture:'🐱',pictureAlt:'Мысықтың суреті',choices:[{text:'🐱 Cat',correct:true},{text:'🐶 Dog'},{text:'🐟 Fish'}],explanation:'Cat — «мысық». Сурет пен сөзді дұрыс сәйкестендірдің!',hint:'Мысық ағылшынша cat деп аталады.'},
@@ -368,6 +466,9 @@
       journeyReviewMode=false;
       saveJourneyProgress();
       renderJourney();
+
+
+
       byId('journeyPrompt').focus();
     }));
     byId('journeyNext').addEventListener('click',()=>{
@@ -398,104 +499,6 @@
       byId('journeyPrompt').focus();
     });
     renderJourney();
-    const byId=id=>document.getElementById(id);
-    if('IntersectionObserver' in window){
-      const observer=new IntersectionObserver(entries=>entries.forEach(entry=>{if(entry.isIntersecting){entry.target.classList.add('visible');observer.unobserve(entry.target)}}),{threshold:.12});
-      document.querySelectorAll('.reveal').forEach(element=>observer.observe(element));
-    }else{document.querySelectorAll('.reveal').forEach(element=>element.classList.add('visible'))}
-    const go=selector=>document.querySelector(selector)?.scrollIntoView({behavior:document.body.classList.contains('reduce')?'auto':'smooth'});
-    function syncModeButtons(){document.querySelectorAll('.smallbtn[onclick^="toggleMode"]').forEach(button=>{const mode=button.getAttribute('onclick').match(/toggleMode\('([^']+)'\)/)?.[1];if(mode)button.setAttribute('aria-pressed',String(document.body.classList.contains(mode)))})}
-    function toggleMode(mode){document.body.classList.toggle(mode);try{localStorage.setItem('mode-'+mode,document.body.classList.contains(mode)?'1':'0')}catch{}syncModeButtons()}
-    ['dyslexia','contrast','reduce'].forEach(mode=>{try{if(localStorage.getItem('mode-'+mode)==='1')document.body.classList.add(mode)}catch{}});syncModeButtons();
-    function speakText(text,statusId){const clean=String(text||'').trim();if(!clean)return;if(!('speechSynthesis' in window)){if(statusId&&byId(statusId))byId(statusId).textContent='Audio is not available in this browser. You can still read the line here.';else addMsg('Audio is not available in this browser. You can still read the text here.','bot');return}window.speechSynthesis.cancel();const utterance=new SpeechSynthesisUtterance(clean);utterance.lang=/[А-Яа-яЁё]/.test(clean)?'ru-RU':'en-US';utterance.rate=.82;utterance.pitch=1;window.speechSynthesis.speak(utterance)}
-
-    const readerStories={dog:{title:'Mia and the Dog',lines:['Mia has a little dog.','The dog likes a red ball.','They play by the green tree.','Then Mia and her dog sit and rest.','Mia smiles. She did it!']},moon:{title:'Trip to the Moon',lines:['Sam sees a bright moon.','He builds a silver rocket.','His cat joins the trip.','They wave at a sleepy star.','They fly home for lunch.']},garden:{title:'Ben’s Garden',lines:['Ben finds a tiny seed.','He gives it a little water.','A green leaf peeks out.','A yellow flower says hello.','Ben smiles at his garden.']}};
-    const readerDefaults={size:'24',font:'atkinson',spacing:'1.9',tone:'cream',line:'0',story:'dog'};
-    function readSavedReaderSetting(name){try{return localStorage.getItem('reader-'+name)||readerDefaults[name]}catch{return readerDefaults[name]}}
-    function saveReaderSetting(name,value){try{localStorage.setItem('reader-'+name,value)}catch{}};let readerStoryName=readSavedReaderSetting('story');if(!readerStories[readerStoryName])readerStoryName='dog';let readerStory=readerStories[readerStoryName].lines;
-    let readerIndex=Math.max(0,Math.min(readerStory.length-1,Number(readSavedReaderSetting('line'))||0));
-    function updateReaderLine(){if('speechSynthesis' in window)window.speechSynthesis.cancel();const finished=readerIndex===readerStory.length-1;byId('readerStoryTitle').textContent=readerStories[readerStoryName].title;byId('readerLine').textContent=readerStory[readerIndex];byId('readerProgress').value=readerIndex+1;byId('readerPosition').textContent=(readerIndex+1)+' / '+readerStory.length;byId('readerPrevBtn').disabled=readerIndex===0;byId('readerNextBtn').hidden=finished;byId('readerRestartBtn').hidden=!finished;byId('readerStatus').textContent=finished?'You finished the little story. You can stop here, read again, or choose another activity.':'Take your time. You can listen or read quietly.';saveReaderSetting('line',String(readerIndex))}
-    function setReaderFontSize(){const size=byId('readerSize').value;byId('readerLine').style.fontSize=size+'px';byId('readerSizeValue').textContent=size+' px';saveReaderSetting('size',size)}
-    function setReaderFont(){const font=byId('readerFont').value;byId('readerLine').style.fontFamily=font==='arial'?'Arial, sans-serif':"'Atkinson Hyperlegible', Arial, sans-serif";saveReaderSetting('font',font)}
-    function setReaderSpacing(){const spacing=byId('readerSpacing').value;byId('readerLine').style.lineHeight=spacing;saveReaderSetting('spacing',spacing)}
-    function setReaderTone(tone){byId('readerPage').dataset.tone=tone;saveReaderSetting('tone',tone)}
-    byId('readerStoryChoice').value=readerStoryName;byId('readerSize').value=readSavedReaderSetting('size');byId('readerFont').value=readSavedReaderSetting('font');byId('readerSpacing').value=readSavedReaderSetting('spacing');
-    document.querySelector('input[name="readerTone"][value="'+readSavedReaderSetting('tone')+'"]')?.click();setReaderTone(readSavedReaderSetting('tone'));
-    setReaderFontSize();setReaderFont();setReaderSpacing();updateReaderLine();
-    byId('readerStoryChoice').addEventListener('change',()=>{readerStoryName=byId('readerStoryChoice').value;readerStory=readerStories[readerStoryName].lines;readerIndex=0;saveReaderSetting('story',readerStoryName);updateReaderLine()});byId('readerSize').addEventListener('input',setReaderFontSize);byId('readerFont').addEventListener('change',setReaderFont);byId('readerSpacing').addEventListener('change',setReaderSpacing);
-    document.querySelectorAll('input[name="readerTone"]').forEach(input=>input.addEventListener('change',()=>setReaderTone(input.value)));
-    byId('readerPrevBtn').addEventListener('click',()=>{if(readerIndex>0){readerIndex--;updateReaderLine()}});
-    byId('readerNextBtn').addEventListener('click',()=>{if(readerIndex<readerStory.length-1){readerIndex++;updateReaderLine()}});
-    byId('readerRestartBtn').addEventListener('click',()=>{readerIndex=0;updateReaderLine();byId('readerLine').focus()});
-    byId('readLineBtn').addEventListener('click',()=>speakText(byId('readerLine').textContent,'readerStatus'));
-    byId('stopReadingBtn').addEventListener('click',()=>{if('speechSynthesis' in window)window.speechSynthesis.cancel();byId('readerStatus').textContent='Audio stopped. Continue whenever you are ready.'});byId('readerResetSettings').addEventListener('click',()=>{byId('readerSize').value=readerDefaults.size;byId('readerFont').value=readerDefaults.font;byId('readerSpacing').value=readerDefaults.spacing;const cream=document.querySelector('input[name="readerTone"][value="cream"]');if(cream)cream.checked=true;setReaderTone('cream');setReaderFontSize();setReaderFont();setReaderSpacing();byId('readerStatus').textContent='Reading settings are back to the usual view.'});
-
-    const quizRounds=[
-      {word:'DOG',sound:'Dog',choices:['🐱 Cat','🐶 Dog','🐟 Fish','🐦 Bird'],answer:'Dog'},
-      {word:'APPLE',sound:'Apple',choices:['🍌 Banana','🍎 Apple','🥕 Carrot','🍋 Lemon'],answer:'Apple'},
-      {word:'SUN',sound:'Sun',choices:['🌙 Moon','⭐ Star','☀️ Sun','☁️ Cloud'],answer:'Sun'},
-      {word:'BOOK',sound:'Book',choices:['✏️ Pencil','🪑 Chair','📘 Book','☕ Cup'],answer:'Book'},
-      {word:'FISH',sound:'Fish',choices:['🐸 Frog','🐠 Fish','🐰 Rabbit','🦋 Butterfly'],answer:'Fish'}
-    ];
-    let quizIndex=-1;
-    function nextWord(){quizIndex=(quizIndex+1)%quizRounds.length;const round=quizRounds[quizIndex];byId('quizWord').textContent=round.word;byId('quizPrompt').textContent='Choose the picture that matches the word · '+(quizIndex+1)+' of '+quizRounds.length;byId('demoFeedback').textContent='';const choices=byId('quizAnswers');choices.replaceChildren();round.choices.forEach(choice=>{const button=document.createElement('button');button.type='button';button.className='answer';button.textContent=choice;button.dataset.answer=choice.slice(choice.indexOf(' ')+1);button.setAttribute('aria-pressed','false');choices.appendChild(button)})}
-    byId('nextWordBtn').addEventListener('click',nextWord);
-    byId('quizAnswers').addEventListener('click',event=>{const button=event.target.closest('.answer');if(!button)return;const round=quizRounds[quizIndex];byId('quizAnswers').querySelectorAll('.answer').forEach(choice=>{choice.classList.remove('correct','wrong');choice.setAttribute('aria-pressed','false')});const correct=button.dataset.answer===round.answer;button.classList.add(correct?'correct':'wrong');button.setAttribute('aria-pressed','true');const message=correct?'✨ Aiko: Great job! You matched the word and picture.':'💡 Aiko: Good try. Listen to the word, then look for the picture that matches it.';byId('demoFeedback').textContent=message;byId('demoFeedback').style.color=correct?'#159b82':'#e84f72';byId('aikoSpeech').textContent=message});
-    nextWord();
-
-    const verbForms={go:'goes',like:'likes',want:'wants',play:'plays',read:'reads',write:'writes',eat:'eats',drink:'drinks',watch:'watches',study:'studies',have:'has',do:'does',walk:'walks',visit:'visits',work:'works'};
-    const pastForms={go:['go','goes','went'],do:['do','does','did'],have:['have','has','had'],am:['am','was'],is:['is','was'],are:['are','were'],eat:['eat','eats','ate'],see:['see','sees','saw'],make:['make','makes','made'],get:['get','gets','got'],take:['take','takes','took'],come:['come','comes','came'],write:['write','writes','wrote'],read:['reads','read'],play:['play','plays','played'],walk:['walk','walks','walked'],visit:['visit','visits','visited'],study:['study','studies','studied'],watch:['watch','watches','watched'],work:['work','works','worked']};
-    function sentenceCase(value){return value.replace(/(^|[.!?]\s+)([a-z])/g,(_,prefix,letter)=>prefix+letter.toUpperCase())}
-    function escapeHTML(value){return String(value).replace(/[&<>"']/g,char=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[char]))}
-    function loadExample(){byId('studentText').value='she go to school yesterday. i have a apple';checkMistakes()}
-    function checkMistakes(){
-      const original=byId('studentText').value.trim();const box=byId('mistakeResult');
-      if(!original){box.innerHTML='<b>Aiko:</b> Type one short sentence first. I will help you step by step.';return}
-      let corrected=original;const found=[];const add=(before,after,message,task)=>{if(before!==after&&found.length<5&&!found.some(item=>item.message===message))found.push({message,task})};
-      const apply=(pattern,replacer,message,task)=>{const before=corrected;corrected=corrected.replace(pattern,replacer);add(before,corrected,message,task)};
-      const isPast=/\b(yesterday|last\s+(?:week|night|month|year)|\d+\s+days?\s+ago|this\s+morning)\b/i.test(corrected);
-      if(isPast){
-        Object.values(pastForms).forEach(forms=>{const past=forms[forms.length-1];if(forms.length<2)return;const present=forms.slice(0,-1).map(value=>value.replace(/[.*+?^${}()|[\]\\]/g,'\\$&')).join('|');if(present===past)return;apply(new RegExp('\\b(?:'+present+')\\b','gi'),past,'A past-time word is a clue to use the past form of the verb.','Write one more sentence about something you did yesterday.')});
-      }
-      apply(/\b(she|he|it)\s+(go|like|want|play|read|write|eat|drink|watch|study|have|do|walk|visit|work)\b/gi,(_,subject,verb)=>subject+' '+(verbForms[verb.toLowerCase()]||verb+'s'),'With he, she or it in the present, the verb usually needs -s or -es.','Try: He plays a game.','present verb');
-      apply(/\b(i|you|we|they)\s+(goes|likes|wants|plays|reads|writes|eats|drinks|watches|studies|has|does|walks|visits|works)\b/gi,(_,subject,verb)=>{const base=Object.keys(verbForms).find(key=>verbForms[key]===verb.toLowerCase())||({has:'have',does:'do'}[verb.toLowerCase()]);return subject+' '+(base||verb)},'With I, you, we or they, use the base verb form.','Try: They like music.','base verb');
-      apply(/\b(i|he|she|it|you|we|they)\s+(am|is|are)\b/gi,(_,subject,verb)=>{const expected={i:'am',he:'is',she:'is',it:'is',you:'are',we:'are',they:'are'}[subject.toLowerCase()];return subject+' '+(verb.toLowerCase()===expected?verb:expected)},'Use the matching form of be: I am, he/she/it is, you/we/they are.','Try: I am ready.','be form');
-      apply(/\b(i|he|she|it|you|we|they)\s+(happy|sad|ready|tired|hungry|excited|kind|small|big|at\s+school)\b/gi,(_,subject,description)=>subject+' '+({i:'am',he:'is',she:'is',it:'is',you:'are',we:'are',they:'are'}[subject.toLowerCase()])+' '+description,'Add am, is or are before a describing word.','Try: She is happy.','missing be');
-      apply(/\b(a|an)\s+([a-z][a-z-]*)\b/gi,(_,article,word)=>{const vowel=/^(?:hour|honest|honor|honour|heir)/i.test(word)||(/^[aeiou]/i.test(word)&&!/^(?:uni|use|usual|euro|one|once|ouija)/i.test(word));return article.toLowerCase()===(vowel?'an':'a')?article:(vowel?'an ':'a ')+word},'Use a before a consonant sound and an before a vowel sound.','Try: an apple and a book.','a/an');
-      apply(/\bi\b/g,'I','The word I is always capitalized in English.','Write: I am ready.','capital I');
-      apply(/\s+([,.!?])/g,'$1','Remove the space before punctuation.','Read the sentence once and check the full stop.','punctuation');
-      apply(/([.!?]){2,}/g,'$1','Use one ending mark at a time.','Finish your sentence with one full stop.','ending mark');
-      apply(/(^|[.!?]\s+)([a-z])/g,(_,prefix,letter)=>prefix+letter.toUpperCase(),'Start each sentence with a capital letter.','Check the first letter of each sentence.','capital letter');
-      const alreadyPast=/\b(went|did|had|was|were|ate|saw|made|got|took|came|wrote|read|played|walked|visited|studied|watched|worked)\b/i.test(corrected);let extraPastNote='';if(isPast&&!alreadyPast&&!found.some(item=>item.message.startsWith('A past-time'))){extraPastNote=' I noticed a past-time word, but could not safely change the verb, so please check it with a teacher.'}
-      if(corrected===original){box.innerHTML='<b>Aiko:</b> Nice work! I did not spot a common beginner pattern in this sentence.'+escapeHTML(extraPastNote)+'<br><br><b>Try next:</b> Read it aloud slowly and see if each word sounds right.';return}
-      if(!/[.!?]$/.test(corrected))corrected+='.';
-      const tips=found.map(item=>'<li>'+escapeHTML(item.message)+'</li>').join('');const exercise=found[0]?.task||'Read the improved sentence aloud once.';
-      box.innerHTML='<b>Aiko:</b> Good try. Let’s improve it one step at a time.<br><br><b>Try this version:</b> '+escapeHTML(corrected)+'<br><br><b>What to practice:</b><ul>'+tips+'</ul><b>One small exercise:</b> '+escapeHTML(exercise);
-    }
-
-    function addMsg(text,type){const windowElement=byId('chatWindow');const message=document.createElement('div');message.className='msg '+type;message.textContent=text;windowElement.appendChild(message);windowElement.scrollTop=windowElement.scrollHeight}
-    function sendChat(){const input=byId('chatInput');const question=input.value.trim();if(!question)return;input.value='';addMsg(question,'user');window.setTimeout(()=>addMsg(aikoAnswer(question),'bot'),180)}
-    function askAiko(question){addMsg(question,'user');window.setTimeout(()=>addMsg(aikoAnswer(question),'bot'),180)}
-    function aikoAnswer(question){
-      const q=question.toLowerCase();
-      if(/[а-яё]/i.test(q)){
-        if(/чита|дислекс|текст/.test(q))return 'Попробуй читать по одной короткой строке, прикрывать лишний текст листом и сначала слушать незнакомое слово. Выбери тот способ, с которым тебе спокойнее.';
-        if(/ошиб|ошибка|исправ|граммат/.test(q))return 'Ошибки помогают понять, что потренировать. Вставь короткое английское предложение в мастерскую слева — я проверю несколько распространённых правил.';
-        if(/слово|перев|значит/.test(q)){const match=q.match(/(?:слово|переведи|значит)\s+([a-z]+)/i);const dictionary={dog:'собака',cat:'кошка',book:'книга',apple:'яблоко',school:'школа',happy:'счастливый',friend:'друг',fish:'рыба',sun:'солнце'};if(match&&dictionary[match[1].toLowerCase()])return match[1]+' значит «'+dictionary[match[1].toLowerCase()]+'». Нажми кнопку «Hear word» в упражнении, чтобы послушать английское произношение.';return 'Напиши английское слово после слова «переведи», например: «переведи apple».';}
-        if(/задани|практик|упражнен/.test(q))return 'Небольшое задание: напиши по-английски одно предложение со словом school. Потом проверь его в мастерской предложений.';
-        if(/произнош|звук|слуш/.test(q))return 'Нажми «Hear word», послушай слово и повтори его медленно. Потом попробуй сказать короткую фразу с этим словом.';
-        return 'Я Aiko, помощник для практики английского. Спроси меня о чтении, правописании, переводе простых слов или небольшом задании.';
-      }
-      if(q.includes('reading')||q.includes('dyslexia'))return 'Try one short line at a time. You can cover the next lines, listen to a new word first, and choose the spacing and colors that feel comfortable for you.';
-      if(q.includes('spell'))return 'Say the word slowly, listen for its parts, write it once, cover it, then try again. If one part is tricky, practice just that part first.';
-      if(q.includes('practice')||q.includes('exercise'))return 'Small practice: write one sentence with the word “school”. Then paste it into the sentence workshop and look at one suggestion at a time.';
-      if(q.includes('pronunciation')||q.includes('sound')||q.includes('listen'))return 'Listen to the word, repeat it slowly, then say it in a short sentence. Clear sounds matter more than speed.';
-      if(q.includes('mistake')||q.includes('error')||q.includes('correct'))return 'Mistakes are clues about what to practice. Paste one short English sentence into the workshop and I will check a few common patterns.';
-      if(q.includes('hello')||q.includes('hi ')||q==='hi'||q.includes('who are you'))return 'Hi! I am Aiko, your English practice companion. Ask me for a reading tip, a word translation, or a short exercise.';
-      const wordMatch=q.match(/(?:translate|meaning of|what does)\s+["']?([a-z]+)["']?/i);const dictionary={dog:'собака',cat:'кошка',book:'книга',apple:'яблоко',school:'школа',happy:'счастливый',friend:'друг',fish:'рыба',sun:'солнце'};
-      if(wordMatch&&dictionary[wordMatch[1]])return '“'+wordMatch[1]+'” means “'+dictionary[wordMatch[1]]+'” in Russian. Press “Hear word” to listen to it.';
-      return 'I can help with reading tips, spelling, simple word meanings, pronunciation and short practice. Tell me which one you want to try.';
-    }
-  </script>
+</script>
 </body>
 </html>
